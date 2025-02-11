@@ -25,10 +25,19 @@ html, body {
   --s_color2: #FFF968;
 }
 
-/* (원래 변수 사용 부분은 그대로 유지) */
+/* 
+css유효성검사할 때 :root 쓰고 var쓴 부분은 오류가 난다. 그러니 var쓴 곳은 전부 원래의 컬러, 폰트, 크기로 바꿔주고 css를 돌려야 한다. 원래는 root하기 전에 원래의 원래의 컬러, 폰트, 크기가 있는 상태에서 했어야했다. 그래서 나 같은 경우, chat gpt에서
+여기에서   --t_color1: #333333;
+  --t_color2: #ffffff;
+  --m_color1: #E3051B;
+  --m_color2: #8E323B;
+  --s_color1: #0599E3;
+  --s_color2: #FFF968; 이 부분이 쓰인 곳을 매치되는 실제 색깔(#~)로 바꿔서 수정한 다음 전체 코드를 줘 
+  라고 한 뒤 수정된 코드에서 :root{} 부분을 지우고 css유효성검사해서 통과했다.
+  */
 
 body {
-  font-family: "42dot Sans", "Noto Sans KR", '맑은 고딕', "Noto Sans", Arial, sans-serif;
+  font-family: "42dot Sans", "Noto Sans KR", '맑은 고딕', "Noto Sans", Arial, sans-serif; /* 마지막 쉼표 제거함 */
   font-size: 13px;
   color: var(--t_color1);
 }
@@ -48,6 +57,7 @@ ol, ul, li {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
+  /* width: 1440px; */
   width: 100%;
   height: 120px;
   z-index: 1100;
@@ -67,25 +77,34 @@ ol, ul, li {
   justify-content: space-between;
   height: 81px;
   padding: 0 20px;
-  margin: 0px auto;
+  margin: 0px auto; /*박스 가운데정렬*/
 }
 
 /* 로고 */
 #logo {
   flex: 0 0 auto;
   background: transparent;
+  /* 위치 이동방법
+    padding-top:100px;
+    margin-top:100px;
+    position:relative; top:100px,
+    transform:translateY(100px),
+  */
   padding-top:60px;
+  
 }
 
 /* 내비게이션 */
 .nav_wrap {
   position: absolute;
   width: 899px;
+  /* 이 부분이 900PX였을 때 양 옆에 붉은색 실선이 보였었다. */
   flex: 1;
   text-align: center;
   height: 81px;
   overflow: hidden;
   transition: 0.5s;
+  /* background: transparent; */
   top: 28px;
   left: 50%;
   transform: translateX(-50%);
@@ -96,18 +115,49 @@ ol, ul, li {
   height: 400px;
 }
 
-/* gnb */
+/* 양 옆에 붉은색 선이 보였을 때 먼저 .nav_wrap:hover를 주석처리 한 다음에 개발자 모드에서 원인을 찾았었다. */
+
+/* gnb: 하단 패딩 추가로 서브메뉴와 붉은 배경 hover영역 포함 */
 .gnb {
+  /* display: inline-block; */
+  /* padding-bottom: 320px; */
   background-color: #ffffff;
+  /*border-left: 1px solid #ffffff !important; 
+  border-right: 1px solid #ffffff !important;*/
 }
 
+/* 왼쪽과 오른쪽에 수직선 추가 */
+/* .gnb::before,
+.gnb::after {
+  content: "";
+  position: absolute;
+  top: 50%;             
+  transform: translateY(-50%);
+  width: 20px;
+  height: 90px;         
+  background-color: #ffffff;
+  margin: 0px -5px;
+  z-index: 6000; 
+} */
+/* 
+.gnb::before {
+  left: 0;
+}
+
+.gnb::after {
+  right: 0;
+} */
+
+
 /* ----- 수정된 부분 시작 ----- */
+/* 각 메뉴 항목(li)에 마우스 올렸을 때만 서브메뉴가 보이도록 함 */
 .gnb > ul > li > .sub {
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
   background: transparent;
+  /* display: none; */
   padding: 10px 15px;
   white-space: nowrap;
 }
@@ -115,6 +165,25 @@ ol, ul, li {
 .gnb > ul > li:hover .sub {
   display: block;
 }
+
+/* 배경 붉은색 영역: 기본은 높이 0
+.gnb::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 81px;
+  width: 100%;
+  height: 0;
+  background: rgba(227, 5, 27, 0.747);
+  z-index: -1;
+  transition: height 0.3s;
+}
+
+:has() 선택자를 사용해, 내부의 직접 자식 li 중 하나가 hover 상태이면 배경을 확장
+.gnb:has(> ul > li:hover)::before {
+  height: 320px;
+} */
 /* ----- 수정된 부분 끝 ----- */
 
 /* 상단 메뉴 */
@@ -129,12 +198,12 @@ ol, ul, li {
 .gnb > ul > li {
   position: relative;
   line-height: 81px;
-  padding: 0 40px;
+  padding: 0 40px; /* 이 부분은 수정하지 않음 */
 }
 
 .gnb > ul > li > a {
-  font-size: 19px;
-  font-weight: bold;
+  font-size: 19px;  /* 수정사항1 반영 */
+  font-weight: bold; /* 수정사항1 반영 */
   color: var(--t_color1);
   padding: 20px 0px;
 }
@@ -144,6 +213,7 @@ ol, ul, li {
   color: var(--m_color1);
 }
 
+/* 서브메뉴 링크 스타일 */
 .gnb > ul > li > .sub > li {
   margin: 0;
   padding: 0;
@@ -240,8 +310,14 @@ main {
   margin: 150px auto 0;
 }
 
+/* 섹션 스타일 (슬라이드 영역은 별도 처리) 
+.c_1 {
+}
+*/
+
 /* ------------------상단슬라이드------------------- */
 
+/* 슬라이드 배너 영역: 슬라이드 컨테이너를 전체 뷰포트 너비로 설정 */
 .slider {
   position: relative;
   width: 100vw;
@@ -249,17 +325,33 @@ main {
   overflow: hidden;
 }
 
+/* 슬라이드들을 좌우로 나열하며, 너비를 전체 뷰포트 너비 기준으로 계산 */
 .slides {
   display: flex;
   width: calc(100vw * 4);
   transition: transform 0.5s ease;
 }
 
-/* 수정사항 3 변경: .slide h2 → .slide h3 (원래 h3 디자인 유지) */
+.slide {
+  position: relative;
+  width: 100vw;
+  height: 84vh;  /* 수정사항 4 반영 */
+  flex-shrink: 0;
+}
+
+/* 슬라이드 이미지: 화면 전체에 꽉 차게 */
+.slide img {
+  width: 100%;
+  height: 800px;
+  object-fit: cover;
+  display: block;
+}
+
+/* 슬라이드 내 텍스트 (h3): 반투명 하얀 배경 */
 .slide h3 {
   position: absolute;
   top: 20%;
-  left: 9%;
+  left: 9%; /* 원하는 시작 위치로 조정 */
   background: rgba(255, 255, 255, 0.568);
   color: var(--t_color1);
   padding: 30px 20px;
@@ -269,13 +361,22 @@ main {
   border-radius: 20px;
 }
 
-.slide img {
-  width: 100%;
-  height: 800px;
-  object-fit: cover;
-  display: block;
+/* 슬라이드 내 버튼 */
+.slide a {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  display: inline-block;
+  padding: 8px 30px;
+  background: var(--m_color1);
+  color: var(--t_color2);
+  border: 1px solid var(--m_color2);
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 14px;
 }
 
+/* 슬라이드 하단 동그라미 */
 .slider-dots {
   position: absolute;
   bottom: 20px;
@@ -300,28 +401,28 @@ main {
 /* ------------------제품소개------------------- */
 
 .c_2 {
+  /* background-color: #8d8d8d; */
   position: relative;
   height: 800px;
   margin-bottom: 20px;
 }
 
 .c_2_box {
-  position: relative;
-  border: none;
+  position: relative; /* 부모 요소를 기준 컨테이너로 설정 */
+  border: none; /* 기존 전체 테두리 제거 */
   border-right: 3px solid var(--m_color1);
   border-bottom: 3px solid var(--m_color1);
-  border-bottom-right-radius: 200px;
+  border-bottom-right-radius: 200px; /* 원하는 반지름 값 적용 */
   width: 700px;
   height: 640px;
 }
 
 .c_2_txt {
-  position: absolute;
+  position: absolute; /* 절대 위치 지정 */
   top: 20%;
   left: 50%;
 }
 
-/* 수정사항 3 변경: .c_2_txt h2 → .c_2_txt h3 */
 .c_2_txt h3 {
   font-size: 34px;
   font-weight: bold;
@@ -329,46 +430,50 @@ main {
 }
 
 .c_2_txt p {
-  font-size: 18px;
+  font-size: 18px; /* 수정사항 5 반영 */ 
   color: var(--t_color1);
   padding: 10px 0px;
 }
 
 .c_2 a{
-  font-size: 18px;
+  font-size: 18px; /* 수정사항 5 반영 */ 
 }
 
 .pr_d {
   color: var(--s_color1);
 }
 
+/* c_2_slide_box 기본 스타일 */
 .c_2_slide_box {
   position: absolute;
   top: 20%;
-  right: 3%;
-  width: 1100px;
+  right: 3%; /* 수정사항 6 반영*/
+  width: 1100px; /* 수정사항 6 반영*/
   height: 450px;
-  overflow: hidden;
+  overflow: hidden; /* 넘치는 부분 숨김 */
 }
 
+/* 슬라이드 컨테이너 (이전 .slide-container 대신 .c_2_slide) */
 .c_2_slide {
   display: flex;
   width: 100%;
   height: 100%;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s ease;  /* 슬라이드 전환 애니메이션 */
 }
 
+/* 개별 슬라이드 (이전 .slide 대신 .c_2_slide_item) */
 .c_2_slide_item {
   position: relative;
-  min-width: 100%;
+  min-width: 100%;  /* 슬라이드 하나당 전체 c_2_slide_box의 너비 */
   height: 100%;
 }
 
+/* 좌우 버튼 공통 스타일 */
 .slide-btn {
   position: absolute;
   width: 44px;
   height: 44px;
-  background-color: var(--s_color1);
+  background-color: var(--s_color1);  /* #0599E3 */
   border: none;
   cursor: pointer;
   display: flex;
@@ -376,38 +481,43 @@ main {
   justify-content: center;
 }
 
+/* 아이콘 색상 */
 .slide-btn i {
-  color: var(--s_color2);
+  color: var(--s_color2); /* #FFF968 */
   font-size: 18px;
 }
 
+/* 왼쪽 버튼 위치 (조건 2) */
 .left-btn {
   top: 215px;
   left: 15px;
   border-radius: 50%;
 }
 
+/* 오른쪽 버튼 위치 (조건 4) */
 .right-btn {
   top: 215px;
   left: 358px;
   border-radius: 50%;
 }
 
+/* red_txt_box 스타일 (조건 5) */
 .red_txt_box {
   position: absolute;
   top: 20px;
   left: 67px;
   width: 281px;
   height: 410px;
-  background-color: var(--m_color1);
+  background-color: var(--m_color1);  /* #E3051B */
   border-radius: 20px;
-  padding: 15px 0;
+  padding: 15px 0; /* 위, 아래 여백 (조건 6) */
   display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
 }
 
+/* red_txt_box 내부 제목 (조건 6) */
 .red_txt_box .red_title {
   margin-bottom: 20px;
   color: #fff;
@@ -416,6 +526,7 @@ main {
   font-weight: bold;
 }
 
+/* 이미지 영역 (조건 7 수정) */
 .red_txt_box .red_img {
   margin: 0 10px;
   width: 218px;
@@ -424,89 +535,102 @@ main {
   border-radius: 20px;
 }
 
+/* 내부 이미지 */
 .red_txt_box .red_img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 20px;
+  border-radius: 20px; /* 필요 시 이미지 자체에도 둥근 테두리 적용 */
 }
 
+/* 텍스트 영역 (조건 8) */
 .red_txt_box .red_text {
-  margin: 10px 35px 0;
+  margin: 10px 35px 0;  /* 기존 여백 */
   color: #fff;
   font-size: 14px;
   text-align: left;
-  line-height: 1.6;
+  line-height: 1.6; /* 줄 간격을 1.6배로 설정 */
 }
 
+/* red-one 스타일 (조건 9, 10, 11) */
+/* 기존 절대 위치를 제거 (자식 요소는 now flex item) */
 .red-one {
-  width: 300px;
-  height: 300px;
-  border: 3px solid var(--m_color1);
-  border-radius: 50%;
+  width: 300px; /* 수정사항 6 반영*/
+  height: 300px; /* 수정사항 6 반영*/
+  border: 3px solid var(--m_color1);  /* 예: #E3051B */
+  border-radius: 50%; /* 원형으로 만듦 */
   box-sizing: border-box;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  overflow: hidden; /* 추가: 이미지가 내부에 있도록 처리 */
+  display: flex; /* 추가: 이미지 중앙 정렬을 위해 플렉스 사용 */
+  justify-content: center; /* 추가: 수평 중앙 정렬 */
+  align-items: center; /* 추가: 수직 중앙 정렬 */
 }
 
+/* 추가: red-one-container 스타일 (수정된 부분 시작) 
+수정사항 6 반영*/
 .red-one-container {
   display: flex;
-  gap: 50px;
+  gap: 50px; /* 양 옆에 50px 간격 수정사항 6 반영*/
   margin-bottom: 30px;
 }
+/* 추가: red-one-container 스타일 (수정된 부분 끝) */
 
 /* ------------------c_3회사소개------------------- */
 
 .c_3 {
+  /* background-color: #8d8d8d; */
   position: relative;
   height: 800px;
+  /* margin-bottom: 20px; */
   background-color: var(--m_color1);
 }
 
+/* 부모 컨테이너: 이미지 박스의 크기와 overflow 설정 */
 .c_3_box {
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* 박스 영역을 벗어난 부분은 감춤 */
+  /* 기존 배경색 등 다른 스타일 유지 */
   background-color: var(--m_color1);
-  height: 800px;
+  height: 800px; /* 예시: 영역 높이 */
 }
 
+/* 이미지 고정 박스 (원래 .c_3_box img에 적용했던 스타일) */
 .img-wrapper {
   position: absolute;
   width: 50%;
   height: 100%;
   left: 75%;
-  border-radius: 400px 0 0 0;
-  overflow: hidden;
-  transform: translateX(-50%);
+  border-radius: 400px 0 0 0;  /* 원하는 둥근 테두리 */
+  overflow: hidden;  /* 이미지가 박스 밖으로 넘치지 않도록 함 */
+  transform: translateX(-50%); /* 좌우 중앙 정렬 */
 }
 
+/* 이미지에 확대/축소 애니메이션 적용 */
 .img-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* 이미지 비율을 유지하며 박스 채움 */
   transform: scale(1);
   animation: zoomAnimation 10s ease-in-out infinite;
 }
 
+/* 키프레임 애니메이션 정의 */
 @keyframes zoomAnimation {
   0%, 100% {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.2);
+    transform: scale(1.2); /* 원하는 확대 비율 (예: 1.2배) */
   }
 }
 
 .c_3_txt {
-  position: absolute;
+  position: absolute; /* 절대 위치 지정 */
   top: 20%;
   left: 10%;
 }
 
-/* 수정사항 3 변경: .c_3_txt h2 → .c_3_txt h3 */
 .c_3_txt h3 {
   font-size: 34px;
   color: var(--t_color2);
@@ -532,95 +656,111 @@ main {
   color: var(--m_color1);
   border: 1px solid var(--m_color2);
   border-radius: 20px;
-  padding: 8px 30px;
+  padding: 8px 30px; /* 수정사항 7 반영 */
   font-size: 14px;
 }
 
 /* ------------------c_4 뉴스영역------------------- */
 
 .c_4 {
-  position: relative;
+  /* background-color: #ffffff; */
+  position: relative; /* 기준 요소 */
   height: 960px;
+  /* margin-bottom: 20px; */
 }
 
 .c_4_line {
-  position: absolute;
+  position: absolute; /* .c_4를 기준으로 위치 지정 */
   background-color: #BFBFBF;
   width: 100%;
   height: 3px;
   top: 80px;
+  /* margin-top: 300px; */
 }
 
-/* 수정사항 3 변경: .c_4_title h2 → .c_4_title (이제 h3 요소에서 스타일 적용) */
 .c_4_title {
-  position: absolute;
+  position: absolute;  /* .c_4를 기준으로 위치 지정 */
   background-color: var(--t_color2);
   color: var(--t_color1);
   padding: 0px 60px;
   top : 62px;
   font-size: 32px;  
-  font-weight: bold;
-  left: 50%;
-  transform: translateX(-50%);
+  font-weight: bold; /* 수정사항 8 반영 */
+  left: 50%; /* 왼쪽 기준으로 50% 이동 */
+  transform: translateX(-50%); /* 자기 너비의 절반만큼 왼쪽으로 이동 */
 }
 
+/* --- c_4 뉴스박스영역 시작 --- */
+
+/* 컨테이너: 가로로 3개의 박스를 배치, 박스 사이 여백 17px */
 .c_4_nwbox {
   position: absolute;
-  top: calc(120px + 70px);
+  top: calc(120px + 70px); /* 원래보다 조금 더 아래로 내림 */
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 17px;
+  gap: 17px; /* 박스 사이 좌우 여백 17px */
 }
 
+/* 각 박스 공통 스타일 */
 .c_4_nwbox > div {
-  border: 3px solid var(--m_color1);
+  border: 3px solid var(--m_color1); /* 변수 --m_color1 값: #E3051B */
   border-radius: 20px;
-  overflow: hidden;
-  background: #fff;
-  transition: transform 0.3s ease;
+  overflow: hidden; /* 내용이 테두리 넘치지 않도록 */
+  background: #fff; /* 필요시 배경색 지정 */
+  transition: transform 0.3s ease; /* 마우스 오버시 확대 효과를 위한 트랜지션 */
 }
 
+/* 마우스 오버시 박스 확대 효과 */
 .c_4_nwbox > div:hover {
-  transform: scale(1.05);
+  transform: scale(1.05); /* 마우스 오버시 살짝 확대 */
 }
 
+/* 왼쪽과 가운데 박스 크기 (265×552px) */
 .c_4_nwb_1,
 .c_4_nwb_2 {
   width: 265px;
   height: 552px;
 }
 
+/* 오른쪽 박스 크기 (586×552px) */
 .c_4_nwb_3 {
   width: 586px;
   height: 552px;
 }
 
+/* 이미지 영역 스타일: 패딩 위/아래 15px, 좌/우 12px, 아래 여백 15px 추가 */
 .c_4_nwb_img {
   padding: 15px 12px;
-  margin-bottom: 15px;
+  margin-bottom: 15px; /* 이미지와 텍스트 사이 여백 */
 }
 
+/* 이미지 기본 스타일 (테두리 둥글게, object-fit 적용) */
 .c_4_nwb_img img {
   display: block;
   border-radius: 10px; 
   object-fit: cover;
+  /* 각 박스별로 아래에서 크기 지정 */
 }
 
+/* 왼쪽, 가운데 박스 이미지: 224×179px */
 .c_4_nwb_1 .c_4_nwb_img img,
 .c_4_nwb_2 .c_4_nwb_img img {
   width: 224px;
   height: 179px;
 }
 
+/* 오른쪽 박스 이미지: 546×305px */
 .c_4_nwb_3 .c_4_nwb_img img {
   width: 546px;
   height: 305px;
 }
 
+/* 박스 내부의 제목과 본문에 대해 부모의 스타일(.c_4 h3 등)을 오버라이딩 */
+/* 더 구체적인 선택자로 지정하여 박스 내부에서 문서 흐름대로 배치 */
 .c_4_nwbox > div h3 {
-  position: static;
-  margin: 15px 12px;
+  position: static;  /* 기본 흐름으로 배치 */
+  margin: 15px 12px;  /* 위, 아래 15px; 좌, 우 12px */
   font-size: 32px;
   color: var(--t_color1);
   font-weight: bold;
@@ -628,18 +768,20 @@ main {
 
 .c_4_nwbox > div p {
   position: static;
-  margin: 15px 12px;
+  margin: 15px 12px;  /* h3와 동일한 좌우 여백 */
   font-size: 18px;
   color: var(--t_color1);
-  line-height: 1.6;
+  line-height: 1.6;  /* 줄 간격을 1.6배로 설정 (필요에 따라 값 조절) */
 }
+
+/* ---------------- c_4 뉴스박스영역 끝 ---------------- */
 
 .c_4 a {
   position: absolute;
   bottom : 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 8px 30px;
+  left: 50%; /* 왼쪽 기준으로 50% 이동 */
+  transform: translateX(-50%); /* 자기 너비의 절반만큼 왼쪽으로 이동 */
+  padding: 8px 30px; /* 수정사항 8 반영 */
   background: var(--m_color1);
   color: var(--t_color2);
   border: 1px solid var(--m_color2);
@@ -650,12 +792,14 @@ main {
 
 /* ------------------c_5 윤리경영-------------- */
 
+/* c_5 영역 기본 설정 */
 .c_5 {
   position: relative;
   height: 800px;
-  overflow: hidden;
+  overflow: hidden; /* 애니메이션 중 이미지가 영역 밖으로 넘치지 않도록 */
 }
 
+/* 가상요소로 배경 이미지 추가 및 애니메이션 적용 */
 .c_5::before {
   content: "";
   position: absolute;
@@ -663,29 +807,30 @@ main {
   right: 0;
   bottom: 0;
   left: 0;
-  background: url('../images/ethics_img.jpg') no-repeat right center;
+  background: url('../images/ethics_img.jpg') no-repeat right center;  /* 수정사항 10 반영 */ 
   background-size: auto 100%;
+  /* 확대/축소 및 밝기 애니메이션 */
   animation: bgEffect 10s ease-in-out infinite;
 }
 
+/* 애니메이션 키프레임 정의 */
 @keyframes bgEffect {
   0%, 100% {
     transform: scale(1);
     filter: brightness(1);
   }
   50% {
-    transform: scale(1.1);
-    filter: brightness(1.5);
+    transform: scale(1.1);      /* 이미지가 약간 확대됨 */
+    filter: brightness(1.5);     /* 밝기가 올라가서 살짝 하얗게 보임 밝기조절 */
   }
 }
 
 .c_5_txt {
-  position: absolute;
+  position: absolute; /* 절대 위치 지정 */
   top: 20%;
   left: 10%;
 }
 
-/* 수정사항 3 변경: .c_5_txt h2 → .c_5_txt h3 */
 .c_5_txt h3 {
   font-size: 34px;
   color: var(--s_color1);
@@ -702,7 +847,7 @@ main {
   color: var(--t_color2);
   border: 1px solid var(--s_color1);
   border-radius: 20px;
-  padding: 8px 30px;
+  padding: 8px 30px; /* 수정사항 9 반영 */
   font-size: 14px;
 }
 
@@ -715,16 +860,17 @@ main {
 .c_6 {
   background-color: var(--s_color1);
   position: relative;
+  /* background-color: #577f86; */
   height: 800px;
+  
 }
 
 .c_6_txt {
-  position: absolute;
+  position: absolute; /* 절대 위치 지정 */
   top: 20%;
   right: 20%;
 }
 
-/* 수정사항 3 변경: .c_6_txt h2 → .c_6_txt h3 */
 .c_6_txt h3 {
   font-size: 34px;
   color: var(--t_color2);
@@ -747,70 +893,79 @@ main {
   color: var(--s_color1);
   border: 1px solid var(--t_color2);
   border-radius: 20px;
-  padding: 8px 30px;
+  padding: 8px 30px;  /* 수정사항 11 반영 */
   font-size: 14px;
 }
 
+/* 링크가 이미지 전체 영역을 덮도록 설정 */
 .c_6_link {
   position: absolute;
-  left: 15%;
-  top: 50%;
+  left: 15%;           /* 기존 .c_6_imgbox left 값 */
+  top: 50%;            /* 기존 .c_6_imgbox top 값 */
   transform: translateY(-50%);
   display: block;
-  width: 584px;
-  height: 584px;
+  width: 584px;        /* 기존 .c_6_imgbox width */
+  height: 584px;       /* 기존 .c_6_imgbox height */
   z-index: 2;
   text-decoration: none;
 }
 
+/* 이미지 영역: 링크 내부에 배경 이미지를 적용 */
 .c_6_imgbox {
   width: 100%;
   height: 100%;
   background-image: url('../images/business_image_1200.png');
-  background-position: right center;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  overflow: hidden;
+  background-position: right center;  /* 오른쪽에 딱 붙게, 수직 중앙 정렬 */
+  background-size: 100% 100%;           /* 높이와 너비를 영역에 맞춤 */
+  background-repeat: no-repeat;         /* 이미지 반복 방지 */
+  overflow: hidden;                     /* 오버레이가 영역 밖으로 나가지 않도록 */
   position: relative;
 }
 
+/* 오버레이 영역 – 기본 상태는 완전히 숨김 (아래로 이동하고 opacity 0) */
 .c_6_overlay {
   position: absolute;
-  top: 0;
+  top: 0;        /* 전체 영역을 덮기 위해 top: 0 */
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(13, 93, 133, 0.788);
-  transform: translateY(100%);
+  transform: translateY(100%);  /* 기본 상태: 아래쪽으로 완전히 이동 */
   opacity: 0;
   transition: transform 0.5s ease, opacity 0.5s ease;
+  
+  /* 오버레이 내부 텍스트 중앙 정렬 */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: var(--t_color2);
-  pointer-events: none;
+  color: var(--t_color2); /* 예: 흰색 */
+  pointer-events: none;  /* 오버레이는 클릭 이벤트를 막지 않음 */
 }
 
+/* 링크 전체 영역에 마우스 오버 시 오버레이가 나타남 */
 .c_6_link:hover .c_6_overlay {
   transform: translateY(0);
   opacity: 1;
 }
 
+/* 오버레이 내부 텍스트 스타일 */
 .c_6_overlay h3 {
   margin: 0;
   font-size: 36px;
+  /* 텍스트를 위로 10px 이동 */
   transform: translateY(-80px);
 }
 
 .c_6_overlay p {
   margin: 10px 0 0;
   font-size: 18px;
+  /* 텍스트를 위로 10px 이동 */
   transform: translateY(-80px);
 }
 
-/* ----------------c_7판매처------------------ */
+/* --------------c_7판매처------------------ */
 
 .c_7 {
   background-color: var(--s_color2);
@@ -819,13 +974,12 @@ main {
 }
 
 .c_7_txt {
-  position: absolute;
+  position: absolute; /* 절대 위치 지정 */
   left : 15%;
   padding-top: 40%;
   transform: translateY(-50%);
 }
 
-/* 수정사항 3 변경: .c_7_txt h2 → .c_7_txt h3 */
 .c_7_txt h3 {
   font-size: 34px;
   color: var(--s_color1);
@@ -839,76 +993,94 @@ main {
   padding: 10px;
 }
 
+/* 드롭다운 메뉴 컨테이너 */
 .c_7_menu {
   position: relative;
   display: inline-block;
-  cursor: pointer;
+  /* 기존 위치 스타일(bottom 등)은 그대로 유지 */
+  cursor: pointer;  /* 마우스 오버 시 손가락 커서 표시 */
   padding-top: 15%;
 }
 
+/* select 요소 스타일 (기존 코드와 병합) */
 .c_7_menu select {
   border: 1px solid var(--s_color1);
   outline: none;
-  border-radius: 20px;
-  padding: 5px 5px;
-  padding-right: 10px;
+  border-radius: 20px;           /* 양 옆 둥글게 */
+  padding: 5px 5px;   /* 수정사항 13 반영 */
+  padding-right: 10px; /* 오른쪽에 아이콘 공간 확보 */ /* 수정사항 13 반영 */
   background-color: var(--t_color2);
   color: var(--s_color1);
   font-size: 14px;
+  
+  /* 브라우저 기본 스타일 제거 */
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  cursor: pointer;
+  cursor: pointer;  /* select 요소에도 적용 */
 }
 
+/* 드롭다운 아이콘 스타일 */
 .c_7_menu i {
   position: absolute;
-  padding-top: 23%;
-  right: 10px;
+  padding-top: 23%; /* 수정사항 13 반영 */
+  right: 10px;                /* 아이콘의 오른쪽 내부 여백 (필요시 조절) */
   transform: translateY(-50%);
-  color: var(--s_color1);
-  pointer-events: none;
+  color: var(--s_color1);     /* 아이콘 색상: #0599E3 */
+  pointer-events: none;       /* 아이콘 클릭 이벤트가 select에 방해되지 않도록 */
 }
 
+/* 필요시 select의 드롭다운 화살표를 감추기 위한 추가 스타일 */
+/* .c_7_menu select::-ms-expand {
+  display: none;
+} */
+
+/* 기존 .c_7_imgbox 스타일 (변경 없이 그대로 사용) */
 .c_7_imgbox {
   position: absolute;
   width: 584px;
   height: 584px;
   background-image: url('../images/converted_store_image.png');
-  background-position: right center;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
+  background-position: right center; /* 오른쪽에 딱 붙게, 수직 중앙 정렬 */
+  background-size: 100% 100%; /* 높이를 영역에 맞추고, 너비는 자동 조절 */
+  background-repeat: no-repeat; /* 이미지 반복 방지 */
   top: 50%;
   right: 20%;
-  transform: translateY(-50%);
-  overflow: hidden;
+  transform: translateY(-50%);  /* 자신의 높이의 50%만큼 위로 이동하여 완벽한 중앙 정렬 */
+  overflow: hidden;  /* 오버레이가 영역 밖으로 나가지 않도록 */
   position: absolute;
 }
 
+/* 새로 추가: .c_7_overlay - 오버레이 영역 */
+/* 기본 상태: 오버레이는 전체 영역에 위치하되, 아래로 이동하여 보이지 않고 opacity 0 */
 .c_7_overlay {
   position: absolute;
-  top: 0;
+  top: 0;            /* 전체 영역을 덮기 위해 top: 0 */
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(241, 219, 16, 0.836);
-  transform: translateY(100%);
+  transform: translateY(100%);  /* 기본 상태: 아래쪽으로 완전히 이동 */
   opacity: 0;
   transition: transform 0.5s ease, opacity 0.5s ease;
+  
+  /* 내부 텍스트 중앙 정렬 */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: var(--t_color2);
-  pointer-events: none;
+  color: var(--t_color2); /* 예: 흰색 */
+  pointer-events: none;  /* 오버레이는 클릭 이벤트를 방해하지 않음 */
 }
 
+/* 마우스 오버 시, .c_7_imgbox 전체에서 오버레이가 슬라이드 업하며 나타남 */
 .c_7_imgbox:hover .c_7_overlay {
   transform: translateY(0);
   opacity: 1;
 }
 
+/* 오버레이 내부 텍스트 스타일 */
 .c_7_overlay h3 {
   margin: 0;
   font-size: 36px;
@@ -1008,9 +1180,10 @@ footer {
 }
 
 .g_txt {
-  color: #a8a8a8;
+  color: #a8a8a8;  /* 수정사할 14 반영 */
 }
 
+/* Top 버튼 기본 상태: 숨김 */
 .btn_top {
   position: fixed;
   right: 20px;
@@ -1029,20 +1202,24 @@ footer {
   font-weight: bold;
   transition: opacity 0.3s, transform 0.3s;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-  opacity: 0;
-  pointer-events: none;
+  /* 실수로 들어간 'ㄴ' 제거 */
+  opacity: 0;           /* 처음에는 투명하게 */
+  pointer-events: none; /* 클릭 불가 */
 }
 
+/* 아이콘 크기 */
 .btn_top i {
   font-size: 18px;
   margin-bottom: 2px;
 }
 
+/* 마우스 오버 효과 (버튼이 보여질 때만 작동) */
 .btn_top:hover {
   background: #b50015;
   transform: scale(1.1);
 }
 
+/* 버튼이 활성화(보여질 때) */
 .btn_top.visible {
   opacity: 1;
   pointer-events: auto;
